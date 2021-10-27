@@ -3,6 +3,7 @@ use std::rc::Rc;
 use camera::Camera;
 use hitable::Hitable;
 use image::png::PngEncoder;
+use rand::{thread_rng, Rng};
 use ray::Ray;
 
 #[macro_use]
@@ -32,8 +33,9 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable) -> Vec3 {
 }
 
 fn main() {
-    let nx = 2000;
-    let ny = 1000;
+    let nx = 4000;
+    let ny = 2000;
+    let samples = 1000;
 
     let sphere_1: Box<Rc<dyn Hitable>> =
         Box::new(Rc::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)));
@@ -43,12 +45,19 @@ fn main() {
     let world = HitableList::new(&[sphere_1, sphere_2]);
     let camera = Camera::new();
     let mut image_bytes = Vec::new();
+    let mut rng = thread_rng();
     for j in (0..ny).rev() {
         for i in 0..nx {
-            let u = i as f32 / nx as f32;
-            let v = j as f32 / ny as f32;
-            let ray = camera.get_ray(u, v);
-            let col = ray_colour(&ray, &world);
+            let mut col = Vec3::new(0.0, 0.0, 0.0);
+            for s in 0..samples {
+                let u_jitter: f32 = rng.gen();
+                let v_jitter: f32 = rng.gen();
+                let u = (i as f32 + u_jitter) / nx as f32;
+                let v = (j as f32 + v_jitter) / ny as f32;
+                let ray = camera.get_ray(u, v);
+                col += ray_colour(&ray, &world);
+            }
+            col /= samples as f32;
             let ir = (255.99 * col.r()) as u16;
             let ig = (255.99 * col.g()) as u16;
             let ib = (255.99 * col.b()) as u16;
