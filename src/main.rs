@@ -33,9 +33,9 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable) -> Vec3 {
 }
 
 fn main() {
-    let nx = 4000;
-    let ny = 2000;
-    let samples = 1000;
+    let nx = 2000;
+    let ny = 1000;
+    let samples = 100;
 
     let sphere_1: Box<Rc<dyn Hitable>> =
         Box::new(Rc::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)));
