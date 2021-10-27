@@ -6,11 +6,7 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub fn new() -> Self {
-        Vec3 { data: [0.0; 3] }
-    }
-
-    pub fn from_values(val1: f32, val2: f32, val3: f32) -> Self {
+    pub fn new(val1: f32, val2: f32, val3: f32) -> Self {
         Vec3 {
             data: [val1, val2, val3],
         }
@@ -48,7 +44,7 @@ impl Vec3 {
     }
 
     pub fn cross(&self, other: &Vec3) -> Vec3 {
-        Vec3::from_values(
+        Vec3::new(
             self.data[1] * other.data[2] - self.data[2] * other.data[1],
             -(self.data[0] * other.data[2] - self.data[2] * other.data[0]),
             self.data[0] * other.data[1] - self.data[1] * other.data[0],
@@ -57,7 +53,7 @@ impl Vec3 {
 
     pub fn unit(&self) -> Vec3 {
         let k = 1.0 / self.length();
-        Vec3::from_values(self.data[0] * k, self.data[1] * k, self.data[2] * k)
+        Vec3::new(self.data[0] * k, self.data[1] * k, self.data[2] * k)
     }
 }
 
@@ -65,7 +61,7 @@ impl ops::Neg for Vec3 {
     type Output = Vec3;
 
     fn neg(self) -> Self::Output {
-        Vec3::from_values(-self.data[0], -self.data[1], -self.data[2])
+        Vec3::new(-self.data[0], -self.data[1], -self.data[2])
     }
 }
 
@@ -84,7 +80,7 @@ impl ops::IndexMut<usize> for Vec3 {
 }
 
 impl_op_ex!(+ |a: &Vec3, b: &Vec3| -> Vec3 {
-    Vec3::from_values(
+    Vec3::new(
             a.data[0] + b.data[0],
             a.data[1] + b.data[1],
             a.data[2] + b.data[2],
@@ -98,7 +94,7 @@ impl_op_ex!(+= |a: &mut Vec3, b: &Vec3| {
 });
 
 impl_op_ex!(-|a: &Vec3, b: &Vec3| -> Vec3 {
-    Vec3::from_values(
+    Vec3::new(
         a.data[0] - b.data[0],
         a.data[1] - b.data[1],
         a.data[2] - b.data[2],
@@ -112,7 +108,7 @@ impl_op_ex!(-= |a: &mut Vec3, b: &Vec3| {
 });
 
 impl_op_ex!(*|a: &Vec3, b: &Vec3| -> Vec3 {
-    Vec3::from_values(
+    Vec3::new(
         a.data[0] * b.data[0],
         a.data[1] * b.data[1],
         a.data[2] * b.data[2],
@@ -120,7 +116,7 @@ impl_op_ex!(*|a: &Vec3, b: &Vec3| -> Vec3 {
 });
 
 impl_op_ex_commutative!(*|a: &Vec3, b: &f32| -> Vec3 {
-    Vec3::from_values(a.data[0] * b, a.data[1] * b, a.data[2] * b)
+    Vec3::new(a.data[0] * b, a.data[1] * b, a.data[2] * b)
 });
 
 impl_op_ex!(*= |a: &mut Vec3, b: &Vec3| {
@@ -136,7 +132,7 @@ impl_op_ex!(*= |a: &mut Vec3, b: &f32| {
 });
 
 impl_op_ex!(/ |a: &Vec3, b: &Vec3| -> Vec3 {
-    Vec3::from_values(
+    Vec3::new(
         a.data[0] / b.data[0],
         a.data[1] / b.data[1],
         a.data[2] / b.data[2],
@@ -144,7 +140,7 @@ impl_op_ex!(/ |a: &Vec3, b: &Vec3| -> Vec3 {
 });
 
 impl_op_ex_commutative!(/ |a: &Vec3, b: &f32| -> Vec3 {
-    Vec3::from_values(a.data[0] / b, a.data[1] / b, a.data[2] / b)
+    Vec3::new(a.data[0] / b, a.data[1] / b, a.data[2] / b)
 });
 
 impl_op_ex!(/= |a: &mut Vec3, b: &Vec3| {
