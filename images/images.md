@@ -8,4 +8,4 @@ Y: 2000
 
 Samples: 1000
 
-![Multisampling](.\MultiSampling.png)
+![Multisampling](MultiSampling.png)
