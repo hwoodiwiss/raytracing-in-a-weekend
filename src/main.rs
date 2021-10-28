@@ -45,34 +45,34 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
 }
 
 fn main() {
-    let nx = 4000;
-    let ny = 2000;
-    let samples = 1000;
+    let nx = 1920;
+    let ny = 1080;
+    let samples = 100;
 
-    let sphere_1: Box<Rc<dyn Hitable>> = Box::new(Rc::new(Sphere::new(
+    let sphere_1: Box<Rc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(0.0, 0.0, -1.0),
         0.5,
-        Box::new(Rc::new(Metal::new(Vec3::new(0.8, 0.2, 0.2), 0.1))),
-    )));
-    let sphere_2: Box<Rc<dyn Hitable>> = Box::new(Rc::new(Sphere::new(
+        Metal::boxed(Vec3::new(0.8, 0.2, 0.2), 0.3),
+    );
+    let sphere_2: Box<Rc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(-1.0, 0.0, -1.0),
         0.5,
-        Box::new(Rc::new(Metal::new(Vec3::new(0.2, 0.8, 0.2), 0.1))),
-    )));
-    let sphere_3: Box<Rc<dyn Hitable>> = Box::new(Rc::new(Sphere::new(
+        Metal::boxed(Vec3::new(0.2, 0.8, 0.2), 0.5),
+    );
+    let sphere_3: Box<Rc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(1.0, 0.0, -1.0),
         0.5,
-        Box::new(Rc::new(Metal::new(Vec3::new(0.2, 0.2, 0.8), 0.1))),
-    )));
-    let ground_sphere: Box<Rc<dyn Hitable>> = Box::new(Rc::new(Sphere::new(
+        Metal::boxed(Vec3::new(0.2, 0.2, 0.8), 0.2),
+    );
+    let ground_sphere: Box<Rc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(0.0, -100.5, -1.0),
         100.0,
-        Box::new(Rc::new(Diffuse::new(Vec3::new(0.2, 0.2, 0.8)))),
-    )));
+        Diffuse::boxed(Vec3::new(0.2, 0.2, 0.2)),
+    );
 
     let world = HitableList::new(&[sphere_1, sphere_2, sphere_3, ground_sphere]);
-    let camera = Camera::new();
-    let mut image_bytes = Vec::new();
+    let camera = Camera::new(90.0, nx as f32 / ny as f32);
+    let mut image_bytes = Vec::with_capacity(nx as usize * ny as usize);
     let mut rng = thread_rng();
     for j in (0..ny).rev() {
         for i in 0..nx {
@@ -87,12 +87,12 @@ fn main() {
             }
             col /= samples as f32;
             col = Vec3::new(col[0].sqrt(), col[1].sqrt(), col[2].sqrt());
-            let ir = (255.99 * col.r()) as u16;
-            let ig = (255.99 * col.g()) as u16;
-            let ib = (255.99 * col.b()) as u16;
-            image_bytes.extend_from_slice(&ir.to_le_bytes());
-            image_bytes.extend_from_slice(&ig.to_le_bytes());
-            image_bytes.extend_from_slice(&ib.to_le_bytes());
+            let ir = (65534.99 * col.r()) as u16;
+            let ig = (65534.99 * col.g()) as u16;
+            let ib = (65534.99 * col.b()) as u16;
+            image_bytes.extend_from_slice(&ir.to_be_bytes());
+            image_bytes.extend_from_slice(&ig.to_be_bytes());
+            image_bytes.extend_from_slice(&ib.to_be_bytes());
         }
     }
 
