@@ -3,6 +3,7 @@ use std::rc::Rc;
 use camera::Camera;
 use hitable::Hitable;
 use image::png::PngEncoder;
+use materials::{diffuse::Diffuse, metal::Metal};
 use rand::{thread_rng, Rng};
 use ray::Ray;
 
@@ -13,18 +14,29 @@ use crate::{hitable::HitableList, shapes::sphere::Sphere, vec3::Vec3};
 
 mod camera;
 mod hitable;
+mod material;
+mod materials;
 mod ray;
 mod shapes;
 mod vec3;
 
-fn ray_colour(ray: &Ray, hitable: &dyn Hitable) -> Vec3 {
-    if let Some(hit) = hitable.hit(ray, 0.0, f32::MAX) {
-        return 0.5
-            * Vec3::new(
-                hit.normal.x() + 1.0,
-                hit.normal.y() + 1.0,
-                hit.normal.z() + 1.0,
-            );
+fn point_in_unit_sphere() -> Vec3 {
+    let mut point = Vec3::new(10.0, 10.0, 10.0);
+    let mut rng = thread_rng();
+    while point.length_squared() >= 1.0 {
+        point = 2.0 * Vec3::new(rng.gen(), rng.gen(), rng.gen()) - Vec3::new(1.0, 1.0, 1.0);
+    }
+    point
+}
+
+fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
+    if let Some(hit) = hitable.hit(ray, 0.0001, f32::MAX) {
+        if depth < 50 {
+            if let Some(mat_hit) = hit.material.scatter(&ray, &hit) {
+                return mat_hit.attenuation * ray_colour(&mat_hit.scatter_ray, hitable, depth + 1);
+            }
+        }
+        return Vec3::new(0.0, 0.0, 0.0);
     } else {
         let unit_direction = ray.direction.unit();
         let t = 0.5 * (unit_direction.y() + 1.0);
@@ -33,16 +45,32 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable) -> Vec3 {
 }
 
 fn main() {
-    let nx = 2000;
-    let ny = 1000;
-    let samples = 100;
+    let nx = 4000;
+    let ny = 2000;
+    let samples = 1000;
 
-    let sphere_1: Box<Rc<dyn Hitable>> =
-        Box::new(Rc::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)));
-    let sphere_2: Box<Rc<dyn Hitable>> =
-        Box::new(Rc::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0)));
+    let sphere_1: Box<Rc<dyn Hitable>> = Box::new(Rc::new(Sphere::new(
+        Vec3::new(0.0, 0.0, -1.0),
+        0.5,
+        Box::new(Rc::new(Metal::new(Vec3::new(0.8, 0.2, 0.2), 0.1))),
+    )));
+    let sphere_2: Box<Rc<dyn Hitable>> = Box::new(Rc::new(Sphere::new(
+        Vec3::new(-1.0, 0.0, -1.0),
+        0.5,
+        Box::new(Rc::new(Metal::new(Vec3::new(0.2, 0.8, 0.2), 0.1))),
+    )));
+    let sphere_3: Box<Rc<dyn Hitable>> = Box::new(Rc::new(Sphere::new(
+        Vec3::new(1.0, 0.0, -1.0),
+        0.5,
+        Box::new(Rc::new(Metal::new(Vec3::new(0.2, 0.2, 0.8), 0.1))),
+    )));
+    let ground_sphere: Box<Rc<dyn Hitable>> = Box::new(Rc::new(Sphere::new(
+        Vec3::new(0.0, -100.5, -1.0),
+        100.0,
+        Box::new(Rc::new(Diffuse::new(Vec3::new(0.2, 0.2, 0.8)))),
+    )));
 
-    let world = HitableList::new(&[sphere_1, sphere_2]);
+    let world = HitableList::new(&[sphere_1, sphere_2, sphere_3, ground_sphere]);
     let camera = Camera::new();
     let mut image_bytes = Vec::new();
     let mut rng = thread_rng();
@@ -55,9 +83,10 @@ fn main() {
                 let u = (i as f32 + u_jitter) / nx as f32;
                 let v = (j as f32 + v_jitter) / ny as f32;
                 let ray = camera.get_ray(u, v);
-                col += ray_colour(&ray, &world);
+                col += ray_colour(&ray, &world, 0);
             }
             col /= samples as f32;
+            col = Vec3::new(col[0].sqrt(), col[1].sqrt(), col[2].sqrt());
             let ir = (255.99 * col.r()) as u16;
             let ig = (255.99 * col.g()) as u16;
             let ib = (255.99 * col.b()) as u16;
