@@ -1,11 +1,12 @@
 use std::rc::Rc;
 
-use crate::{ray::Ray, vec3::Vec3};
+use crate::{material::Material, ray::Ray, vec3::Vec3};
 
 pub struct RayHit {
     pub distance: f32,
     pub point: Vec3,
     pub normal: Vec3,
+    pub material: Box<Rc<dyn Material>>,
 }
 
 pub trait Hitable {
