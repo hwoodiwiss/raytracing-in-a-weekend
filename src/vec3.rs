@@ -55,6 +55,10 @@ impl Vec3 {
         let k = 1.0 / self.length();
         Vec3::new(self.data[0] * k, self.data[1] * k, self.data[2] * k)
     }
+
+    pub fn relfect(&self, other: &Vec3) -> Vec3 {
+        self - 2.0 * self.dot(other) * other
+    }
 }
 
 impl ops::Neg for Vec3 {
