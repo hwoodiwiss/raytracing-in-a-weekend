@@ -56,8 +56,8 @@ impl Vec3 {
         Vec3::new(self.data[0] * k, self.data[1] * k, self.data[2] * k)
     }
 
-    pub fn relfect(&self, other: &Vec3) -> Vec3 {
-        self - 2.0 * self.dot(other) * other
+    pub fn relfect(&self, normal: &Vec3) -> Vec3 {
+        self - 2.0 * self.dot(normal) * normal
     }
 }
 
