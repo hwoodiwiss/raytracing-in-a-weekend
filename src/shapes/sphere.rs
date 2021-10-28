@@ -1,5 +1,8 @@
+use std::rc::Rc;
+
 use crate::{
     hitable::{Hitable, RayHit},
+    material::Material,
     ray::Ray,
     vec3::Vec3,
 };
@@ -7,11 +10,16 @@ use crate::{
 pub struct Sphere {
     centre: Vec3,
     radius: f32,
+    material: Box<Rc<dyn Material>>,
 }
 
 impl Sphere {
-    pub fn new(centre: Vec3, radius: f32) -> Self {
-        Sphere { centre, radius }
+    pub fn new(centre: Vec3, radius: f32, material: Box<Rc<dyn Material>>) -> Self {
+        Sphere {
+            centre,
+            radius,
+            material,
+        }
     }
 }
 
@@ -29,6 +37,7 @@ impl Hitable for Sphere {
                     distance,
                     point: ray.point_at(distance),
                     normal: (ray.point_at(distance) - self.centre) / self.radius,
+                    material: self.material.clone(),
                 });
             }
             let distance = (-b + (b.powi(2) - a * c).sqrt()) / a;
@@ -37,6 +46,7 @@ impl Hitable for Sphere {
                     distance,
                     point: ray.point_at(distance),
                     normal: (ray.point_at(distance) - self.centre) / self.radius,
+                    material: self.material.clone(),
                 });
             }
         }
