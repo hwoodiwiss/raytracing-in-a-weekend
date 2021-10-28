@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::{
     hitable::RayHit,
     material::{Material, MaterialHit},
@@ -13,6 +15,10 @@ pub struct Diffuse {
 impl Diffuse {
     pub fn new(albedo: Vec3) -> Self {
         Self { albedo }
+    }
+
+    pub fn boxed(albedo: Vec3) -> Box<Rc<dyn Material>> {
+        Box::new(Rc::new(Self::new(albedo)))
     }
 }
 

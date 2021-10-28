@@ -21,6 +21,14 @@ impl Sphere {
             material,
         }
     }
+
+    pub fn boxed(
+        centre: Vec3,
+        radius: f32,
+        material: Box<Rc<dyn Material>>,
+    ) -> Box<Rc<dyn Hitable>> {
+        Box::new(Rc::new(Self::new(centre, radius, material)))
+    }
 }
 
 impl Hitable for Sphere {

@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::{
     hitable::RayHit,
     material::{Material, MaterialHit},
@@ -17,6 +19,10 @@ impl Metal {
             albedo,
             fuzz: fuzz.clamp(0.0, 1.0),
         }
+    }
+
+    pub fn boxed(albedo: Vec3, fuzz: f32) -> Box<Rc<dyn Material>> {
+        Box::new(Rc::new(Self::new(albedo, fuzz)))
     }
 }
 
