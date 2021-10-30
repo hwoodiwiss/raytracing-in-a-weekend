@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{rc::Rc, sync::Arc};
 
 use crate::{
     hitable::{Hitable, RayHit},
@@ -10,11 +10,11 @@ use crate::{
 pub struct Sphere {
     centre: Vec3,
     radius: f32,
-    material: Box<Rc<dyn Material>>,
+    material: Box<Arc<dyn Material>>,
 }
 
 impl Sphere {
-    pub fn new(centre: Vec3, radius: f32, material: Box<Rc<dyn Material>>) -> Self {
+    pub fn new(centre: Vec3, radius: f32, material: Box<Arc<dyn Material>>) -> Self {
         Sphere {
             centre,
             radius,
@@ -25,9 +25,9 @@ impl Sphere {
     pub fn boxed(
         centre: Vec3,
         radius: f32,
-        material: Box<Rc<dyn Material>>,
-    ) -> Box<Rc<dyn Hitable>> {
-        Box::new(Rc::new(Self::new(centre, radius, material)))
+        material: Box<Arc<dyn Material>>,
+    ) -> Box<Arc<dyn Hitable>> {
+        Box::new(Arc::new(Self::new(centre, radius, material)))
     }
 }
 

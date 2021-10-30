@@ -1,4 +1,4 @@
-use std::{rc::Rc, time::SystemTime};
+use std::{rc::Rc, sync::Arc, time::SystemTime};
 
 use camera::Camera;
 use hitable::Hitable;
@@ -51,29 +51,29 @@ fn main() {
     let ny = 1080;
     let samples = 100;
 
-    let sphere_1: Box<Rc<dyn Hitable>> = Sphere::boxed(
+    let sphere_1: Box<Arc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(0.0, 0.0, -1.0),
         0.5,
         Diffuse::boxed(Vec3::new(0.8, 0.3, 0.3)),
     );
-    let sphere_2: Box<Rc<dyn Hitable>> = Sphere::boxed(
+    let sphere_2: Box<Arc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(-1.0, 0.0, -1.0),
         0.5,
         Metal::boxed(Vec3::new(0.8, 0.8, 0.8), 0.0),
     );
-    let sphere_3: Box<Rc<dyn Hitable>> =
+    let sphere_3: Box<Arc<dyn Hitable>> =
         Sphere::boxed(Vec3::new(1.0, 0.0, -1.0), 0.45, Dielectric::boxed(1.5));
-    let sphere_4: Box<Rc<dyn Hitable>> = Sphere::boxed(
+    let sphere_4: Box<Arc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(1.2, 0.0, -2.1),
         0.45,
         Diffuse::boxed(Vec3::new(0.6, 0.8, 0.6)),
     );
-    let sphere_5: Box<Rc<dyn Hitable>> = Sphere::boxed(
+    let sphere_5: Box<Arc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(0.0, 0.0, 0.500000001),
         0.45,
         Metal::boxed(Vec3::new(1.0, 1.0, 1.0), 0.01),
     );
-    let ground_sphere: Box<Rc<dyn Hitable>> = Sphere::boxed(
+    let ground_sphere: Box<Arc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(0.0, -100.5, -1.0),
         100.0,
         Diffuse::boxed(Vec3::new(0.8, 0.8, 0.0)),

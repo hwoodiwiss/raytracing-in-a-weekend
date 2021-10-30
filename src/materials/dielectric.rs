@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{rc::Rc, sync::Arc};
 
 use rand::{thread_rng, Rng};
 
@@ -18,8 +18,8 @@ impl Dielectric {
         Self { refractive_index }
     }
 
-    pub fn boxed(refractive_index: f32) -> Box<Rc<dyn Material>> {
-        Box::new(Rc::new(Self::new(refractive_index)))
+    pub fn boxed(refractive_index: f32) -> Box<Arc<dyn Material>> {
+        Box::new(Arc::new(Self::new(refractive_index)))
     }
 
     fn schlick(cosine: f32, refractive_index: f32) -> f32 {

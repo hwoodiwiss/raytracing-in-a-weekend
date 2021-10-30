@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{rc::Rc, sync::Arc};
 
 use crate::{
     hitable::RayHit,
@@ -17,8 +17,8 @@ impl Diffuse {
         Self { albedo }
     }
 
-    pub fn boxed(albedo: Vec3) -> Box<Rc<dyn Material>> {
-        Box::new(Rc::new(Self::new(albedo)))
+    pub fn boxed(albedo: Vec3) -> Box<Arc<dyn Material>> {
+        Box::new(Arc::new(Self::new(albedo)))
     }
 }
 

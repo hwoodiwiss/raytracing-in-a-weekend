@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{rc::Rc, sync::Arc};
 
 use crate::{material::Material, ray::Ray, vec3::Vec3};
 
@@ -6,7 +6,7 @@ pub struct RayHit {
     pub distance: f32,
     pub point: Vec3,
     pub normal: Vec3,
-    pub material: Box<Rc<dyn Material>>,
+    pub material: Box<Arc<dyn Material>>,
 }
 
 pub trait Hitable {
@@ -14,11 +14,11 @@ pub trait Hitable {
 }
 
 pub struct HitableList {
-    list: Vec<Box<Rc<dyn Hitable>>>,
+    list: Vec<Box<Arc<dyn Hitable>>>,
 }
 
 impl HitableList {
-    pub fn new(items: &[Box<Rc<dyn Hitable>>]) -> Self {
+    pub fn new(items: &[Box<Arc<dyn Hitable>>]) -> Self {
         HitableList {
             list: Vec::from(items),
         }
