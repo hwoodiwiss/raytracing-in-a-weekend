@@ -10,7 +10,9 @@ use ray::Ray;
 #[macro_use]
 extern crate impl_ops;
 
-use crate::{hitable::HitableList, shapes::sphere::Sphere, vec3::Vec3};
+use crate::{
+    hitable::HitableList, materials::dielectric::Dielectric, shapes::sphere::Sphere, vec3::Vec3,
+};
 
 mod camera;
 mod hitable;
@@ -52,26 +54,39 @@ fn main() {
     let sphere_1: Box<Rc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(0.0, 0.0, -1.0),
         0.5,
-        Metal::boxed(Vec3::new(0.8, 0.2, 0.2), 0.3),
+        Diffuse::boxed(Vec3::new(0.8, 0.3, 0.3)),
     );
     let sphere_2: Box<Rc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(-1.0, 0.0, -1.0),
         0.5,
-        Metal::boxed(Vec3::new(0.2, 0.8, 0.2), 0.5),
+        Metal::boxed(Vec3::new(0.8, 0.8, 0.8), 0.0),
     );
-    let sphere_3: Box<Rc<dyn Hitable>> = Sphere::boxed(
-        Vec3::new(1.0, 0.0, -1.0),
-        0.5,
-        Metal::boxed(Vec3::new(0.2, 0.2, 0.8), 0.2),
+    let sphere_3: Box<Rc<dyn Hitable>> =
+        Sphere::boxed(Vec3::new(1.0, 0.0, -1.0), 0.45, Dielectric::boxed(1.5));
+    let sphere_4: Box<Rc<dyn Hitable>> = Sphere::boxed(
+        Vec3::new(1.2, 0.0, -2.1),
+        0.45,
+        Diffuse::boxed(Vec3::new(0.6, 0.8, 0.6)),
+    );
+    let sphere_5: Box<Rc<dyn Hitable>> = Sphere::boxed(
+        Vec3::new(0.0, 0.0, -0.500000001),
+        0.45,
+        Metal::boxed(Vec3::new(0.8, 0.6, 0.4), 0.01),
     );
     let ground_sphere: Box<Rc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(0.0, -100.5, -1.0),
         100.0,
-        Diffuse::boxed(Vec3::new(0.2, 0.2, 0.2)),
+        Diffuse::boxed(Vec3::new(0.8, 0.8, 0.0)),
     );
 
-    let world = HitableList::new(&[sphere_1, sphere_2, sphere_3, ground_sphere]);
-    let camera = Camera::new(90.0, nx as f32 / ny as f32);
+    let world = HitableList::new(&[
+        sphere_1,
+        sphere_2,
+        sphere_3,
+        sphere_4,
+        sphere_5,
+        ground_sphere,
+    ]);
     let mut image_bytes = Vec::with_capacity(nx as usize * ny as usize);
     let mut rng = thread_rng();
     for j in (0..ny).rev() {
