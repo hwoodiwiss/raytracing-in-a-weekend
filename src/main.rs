@@ -69,9 +69,9 @@ fn main() {
         Diffuse::boxed(Vec3::new(0.6, 0.8, 0.6)),
     );
     let sphere_5: Box<Rc<dyn Hitable>> = Sphere::boxed(
-        Vec3::new(0.0, 0.0, -0.500000001),
+        Vec3::new(0.0, 0.0, 0.500000001),
         0.45,
-        Metal::boxed(Vec3::new(0.8, 0.6, 0.4), 0.01),
+        Metal::boxed(Vec3::new(1.0, 1.0, 1.0), 0.01),
     );
     let ground_sphere: Box<Rc<dyn Hitable>> = Sphere::boxed(
         Vec3::new(0.0, -100.5, -1.0),
