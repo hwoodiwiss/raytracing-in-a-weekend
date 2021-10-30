@@ -87,6 +87,13 @@ fn main() {
         sphere_5,
         ground_sphere,
     ]);
+    let camera = Camera::new(
+        Vec3::new(0.0, 0.0, 0.0),
+        Vec3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        90.0,
+        nx as f32 / ny as f32,
+    );
     let mut image_bytes = Vec::with_capacity(nx as usize * ny as usize);
     let mut rng = thread_rng();
     for j in (0..ny).rev() {
