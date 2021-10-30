@@ -59,6 +59,17 @@ impl Vec3 {
     pub fn relfect(&self, normal: &Vec3) -> Vec3 {
         self - 2.0 * self.dot(normal) * normal
     }
+
+    pub fn refract(&self, normal: &Vec3, ni_over_nt: f32) -> Option<Vec3> {
+        let unit = self.unit();
+        let dot = unit.dot(normal);
+        let discriminant = 1.0 - ni_over_nt.powi(2) * (1.0 - dot.powi(2));
+        if discriminant > 0.0 {
+            Some(ni_over_nt * (unit - normal * dot) - normal * discriminant.sqrt())
+        } else {
+            None
+        }
+    }
 }
 
 impl ops::Neg for Vec3 {
