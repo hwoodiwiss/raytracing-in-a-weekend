@@ -43,3 +43,13 @@ Samples: 1000
 ![Reflective Spheres](Metals.png)
 
 Notes: This took about 40 mins!
+
+X: 7680
+
+Y: 4320
+
+Samples: 1000
+
+![Reflective Spheres in 8K](BigMetals.png)
+
+Notes: I left this overnight!
