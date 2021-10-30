@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{rc::Rc, time::SystemTime};
 
 use camera::Camera;
 use hitable::Hitable;
@@ -42,7 +42,7 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
     } else {
         let unit_direction = ray.direction.unit();
         let t = 0.5 * (unit_direction.y() + 1.0);
-        return &((1.0 - t) * &Vec3::new(1.0, 1.0, 1.0)) + &(t * &Vec3::new(0.5, 0.7, 1.0));
+        return (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0);
     };
 }
 
