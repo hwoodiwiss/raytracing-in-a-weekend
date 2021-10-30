@@ -96,6 +96,8 @@ fn main() {
     );
     let mut image_bytes = Vec::with_capacity(nx as usize * ny as usize);
     let mut rng = thread_rng();
+
+    let now = SystemTime::now();
     for j in (0..ny).rev() {
         for i in 0..nx {
             let mut col = Vec3::new(0.0, 0.0, 0.0);
@@ -117,7 +119,10 @@ fn main() {
             image_bytes.extend_from_slice(&ib.to_be_bytes());
         }
     }
-
+    println!(
+        "Image rendered in {} seconds",
+        now.elapsed().unwrap().as_secs()
+    );
     let mut file = std::fs::File::create("raytracing.png").unwrap();
     let png_encoder = PngEncoder::new(&mut file);
     png_encoder
