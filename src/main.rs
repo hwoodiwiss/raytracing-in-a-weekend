@@ -1,4 +1,4 @@
-use std::{rc::Rc, sync::Arc, time::SystemTime};
+use std::{sync::Arc, time::SystemTime};
 
 use camera::Camera;
 use hitable::Hitable;
@@ -101,7 +101,7 @@ fn main() {
     for j in (0..ny).rev() {
         for i in 0..nx {
             let mut col = Vec3::new(0.0, 0.0, 0.0);
-            for s in 0..samples {
+            for _ in 0..samples {
                 let u_jitter: f32 = rng.gen();
                 let v_jitter: f32 = rng.gen();
                 let u = (i as f32 + u_jitter) / nx as f32;
