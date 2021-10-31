@@ -76,7 +76,7 @@ fn main() {
         Diffuse::arc(Vec3::new(0.6, 0.8, 0.6)),
     );
     let sphere_5: Arc<dyn Hitable> = Sphere::arc(
-        Vec3::new(0.0, 0.0, 0.500000001),
+        Vec3::new(0.0, 0.0, 0.500001),
         0.45,
         Metal::arc(Vec3::new(1.0, 1.0, 1.0), 0.01),
     );
