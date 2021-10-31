@@ -1,4 +1,8 @@
-use std::{mem::size_of, sync::Arc, time::SystemTime};
+use std::{
+    mem::size_of,
+    sync::{Arc, Mutex},
+    time::SystemTime,
+};
 
 use camera::Camera;
 use hitable::Hitable;
@@ -6,6 +10,7 @@ use image::png::PngEncoder;
 use materials::{diffuse::Diffuse, metal::Metal};
 use rand::{thread_rng, Rng};
 use ray::Ray;
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 #[macro_use]
 extern crate impl_ops;
@@ -47,8 +52,8 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
 }
 
 fn main() {
-    let nx = 1920;
-    let ny = 1080;
+    let nx = 3840;
+    let ny = 2160;
     let num_pixels = nx * ny;
     let pixel_size = size_of::<u16>() * 3;
     let samples = 100;
@@ -96,12 +101,11 @@ fn main() {
         90.0,
         nx as f32 / ny as f32,
     );
-    let mut image_bytes = vec![0; num_pixels as usize * pixel_size];
-    let mut rng = thread_rng();
+    let mut image_bytes = Arc::new(Mutex::new(vec![0; num_pixels as usize * pixel_size]));
 
     let now = SystemTime::now();
-
-    for idx in 0..num_pixels {
+    (0..num_pixels).into_par_iter().for_each(|idx| {
+        let mut rng = thread_rng();
         let j = ny - idx / nx;
         let i = idx % nx;
         let mut col = Vec3::new(0.0, 0.0, 0.0);
@@ -125,10 +129,10 @@ fn main() {
             .iter()
             .flat_map(|channel| channel.to_be_bytes())
             .for_each(|byte| {
-                image_bytes[idx * pixel_size + ctr] = byte;
+                image_bytes.lock().unwrap()[idx * pixel_size + ctr] = byte;
                 ctr += 1
             });
-    }
+    });
 
     println!(
         "Image rendered in {} seconds",
@@ -137,6 +141,11 @@ fn main() {
     let mut file = std::fs::File::create("raytracing.png").unwrap();
     let png_encoder = PngEncoder::new(&mut file);
     png_encoder
-        .encode(&image_bytes, nx as u32, ny as u32, image::ColorType::Rgb16)
+        .encode(
+            &image_bytes.lock().unwrap(),
+            nx as u32,
+            ny as u32,
+            image::ColorType::Rgb16,
+        )
         .unwrap();
 }
