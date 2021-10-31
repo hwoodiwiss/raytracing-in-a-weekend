@@ -47,7 +47,7 @@ fn main() {
     let ny = 1080;
     let num_pixels = nx * ny;
     let pixel_size = size_of::<u16>() * 3;
-    let samples = 1;
+    let samples = 100;
 
     let sphere_1: Arc<dyn Hitable> = Sphere::arc(
         Vec3::new(0.0, 0.0, -1.0),
