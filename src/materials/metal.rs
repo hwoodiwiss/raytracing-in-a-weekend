@@ -3,7 +3,6 @@ use std::sync::Arc;
 use crate::{
     hitable::RayHit,
     material::{Material, MaterialHit},
-    point_in_unit_sphere,
     ray::Ray,
     vec3::Vec3,
 };
@@ -29,7 +28,10 @@ impl Metal {
 impl Material for Metal {
     fn scatter(&self, in_ray: &Ray, hit: &RayHit) -> Option<MaterialHit> {
         let reflection = in_ray.direction.unit().relfect(&hit.normal);
-        let scatter_ray = Ray::new(hit.point, reflection + self.fuzz * point_in_unit_sphere());
+        let scatter_ray = Ray::new(
+            hit.point,
+            reflection + self.fuzz * Vec3::get_point_in_unit_sphere(),
+        );
         let attenuation = self.albedo;
         if scatter_ray.direction.dot(&hit.normal) > 0.0 {
             Some(MaterialHit {

@@ -1,5 +1,7 @@
 use std::{fmt::Display, ops};
 
+use rand::{thread_rng, Rng};
+
 #[derive(Copy, Clone)]
 pub struct Vec3 {
     data: [f32; 3],
@@ -69,6 +71,15 @@ impl Vec3 {
         } else {
             None
         }
+    }
+
+    pub fn get_point_in_unit_sphere() -> Vec3 {
+        let mut point = Vec3::new(10.0, 10.0, 10.0);
+        let mut rng = thread_rng();
+        while point.length_squared() >= 1.0 {
+            point = 2.0 * Vec3::new(rng.gen(), rng.gen(), rng.gen()) - Vec3::new(1.0, 1.0, 1.0);
+        }
+        point
     }
 }
 

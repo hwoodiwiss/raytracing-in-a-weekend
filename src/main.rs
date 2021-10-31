@@ -27,15 +27,6 @@ mod ray;
 mod shapes;
 mod vec3;
 
-fn point_in_unit_sphere() -> Vec3 {
-    let mut point = Vec3::new(10.0, 10.0, 10.0);
-    let mut rng = thread_rng();
-    while point.length_squared() >= 1.0 {
-        point = 2.0 * Vec3::new(rng.gen(), rng.gen(), rng.gen()) - Vec3::new(1.0, 1.0, 1.0);
-    }
-    point
-}
-
 fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
     if let Some(hit) = hitable.hit(ray, 0.0001, f32::MAX) {
         if depth < 50 {
