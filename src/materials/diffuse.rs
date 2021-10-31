@@ -23,7 +23,7 @@ impl Diffuse {
 }
 
 impl Material for Diffuse {
-    fn scatter(&self, in_ray: &Ray, hit: &RayHit) -> Option<MaterialHit> {
+    fn scatter(&self, _in_ray: &Ray, hit: &RayHit) -> Option<MaterialHit> {
         let target = hit.point + hit.normal + point_in_unit_sphere();
         let scatter_ray = Ray::new(hit.point, target);
         let attenuation = self.albedo;
