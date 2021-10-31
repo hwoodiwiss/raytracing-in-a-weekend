@@ -9,7 +9,7 @@ pub struct RayHit {
     pub material: Box<Arc<dyn Material>>,
 }
 
-pub trait Hitable {
+pub trait Hitable: Sync + Send {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<RayHit>;
 }
 
