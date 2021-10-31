@@ -12,6 +12,6 @@ impl Ray {
     }
 
     pub fn point_at(&self, distance: f32) -> Vec3 {
-        &self.origin + &(&self.direction * distance)
+        self.origin + (self.direction * distance)
     }
 }
