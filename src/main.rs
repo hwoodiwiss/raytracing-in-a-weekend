@@ -101,7 +101,7 @@ fn main() {
         90.0,
         nx as f32 / ny as f32,
     );
-    let mut image_bytes = Arc::new(Mutex::new(vec![0; num_pixels as usize * pixel_size]));
+    let image_bytes = Arc::new(Mutex::new(vec![0; num_pixels as usize * pixel_size]));
 
     let now = SystemTime::now();
     (0..num_pixels).into_par_iter().for_each(|idx| {
