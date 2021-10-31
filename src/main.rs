@@ -47,7 +47,7 @@ fn main() {
     let ny = 1080;
     let num_pixels = nx * ny;
     let pixel_size = size_of::<u16>() * 3;
-    let samples = 100;
+    let samples = 1;
 
     let sphere_1: Arc<dyn Hitable> = Sphere::arc(
         Vec3::new(0.0, 0.0, -1.0),
@@ -124,11 +124,15 @@ fn main() {
                 ctr += 1
             });
     });
-
-    println!(
-        "Image rendered in {} seconds",
-        now.elapsed().unwrap().as_secs()
-    );
+    let elapsed_millis = now.elapsed().unwrap().as_millis();
+    if elapsed_millis > 1000 {
+        println!(
+            "Image rendered in {} seconds",
+            elapsed_millis as f32 / 1000.0
+        );
+    } else {
+        println!("Image rendered in {} milliseconds", elapsed_millis);
+    }
     let mut file = std::fs::File::create("raytracing.png").unwrap();
     let png_encoder = PngEncoder::new(&mut file);
     png_encoder
