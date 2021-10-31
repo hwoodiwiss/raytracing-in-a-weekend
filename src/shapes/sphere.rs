@@ -10,11 +10,11 @@ use crate::{
 pub struct Sphere {
     centre: Vec3,
     radius: f32,
-    material: Box<Arc<dyn Material>>,
+    material: Arc<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(centre: Vec3, radius: f32, material: Box<Arc<dyn Material>>) -> Self {
+    pub fn new(centre: Vec3, radius: f32, material: Arc<dyn Material>) -> Self {
         Sphere {
             centre,
             radius,
@@ -22,12 +22,8 @@ impl Sphere {
         }
     }
 
-    pub fn boxed(
-        centre: Vec3,
-        radius: f32,
-        material: Box<Arc<dyn Material>>,
-    ) -> Box<Arc<dyn Hitable>> {
-        Box::new(Arc::new(Self::new(centre, radius, material)))
+    pub fn arc(centre: Vec3, radius: f32, material: Arc<dyn Material>) -> Arc<dyn Hitable> {
+        Arc::new(Self::new(centre, radius, material))
     }
 }
 

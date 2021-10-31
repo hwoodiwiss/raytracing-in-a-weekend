@@ -17,8 +17,8 @@ impl Diffuse {
         Self { albedo }
     }
 
-    pub fn boxed(albedo: Vec3) -> Box<Arc<dyn Material>> {
-        Box::new(Arc::new(Self::new(albedo)))
+    pub fn arc(albedo: Vec3) -> Arc<dyn Material> {
+        Arc::new(Self::new(albedo))
     }
 }
 

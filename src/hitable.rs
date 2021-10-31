@@ -6,7 +6,7 @@ pub struct RayHit {
     pub distance: f32,
     pub point: Vec3,
     pub normal: Vec3,
-    pub material: Box<Arc<dyn Material>>,
+    pub material: Arc<dyn Material>,
 }
 
 pub trait Hitable: Sync + Send {
@@ -14,11 +14,11 @@ pub trait Hitable: Sync + Send {
 }
 
 pub struct HitableList {
-    list: Vec<Box<Arc<dyn Hitable>>>,
+    list: Vec<Arc<dyn Hitable>>,
 }
 
 impl HitableList {
-    pub fn new(items: &[Box<Arc<dyn Hitable>>]) -> Self {
+    pub fn new(items: &[Arc<dyn Hitable>]) -> Self {
         HitableList {
             list: Vec::from(items),
         }

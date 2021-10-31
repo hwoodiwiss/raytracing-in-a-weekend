@@ -21,8 +21,8 @@ impl Metal {
         }
     }
 
-    pub fn boxed(albedo: Vec3, fuzz: f32) -> Box<Arc<dyn Material>> {
-        Box::new(Arc::new(Self::new(albedo, fuzz)))
+    pub fn arc(albedo: Vec3, fuzz: f32) -> Arc<dyn Material> {
+        Arc::new(Self::new(albedo, fuzz))
     }
 }
 

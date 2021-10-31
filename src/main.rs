@@ -56,34 +56,34 @@ fn main() {
     let ny = 2160;
     let num_pixels = nx * ny;
     let pixel_size = size_of::<u16>() * 3;
-    let samples = 100;
+    let samples = 1000;
 
-    let sphere_1: Box<Arc<dyn Hitable>> = Sphere::boxed(
+    let sphere_1: Arc<dyn Hitable> = Sphere::arc(
         Vec3::new(0.0, 0.0, -1.0),
         0.5,
-        Diffuse::boxed(Vec3::new(0.8, 0.3, 0.3)),
+        Diffuse::arc(Vec3::new(0.8, 0.3, 0.3)),
     );
-    let sphere_2: Box<Arc<dyn Hitable>> = Sphere::boxed(
+    let sphere_2: Arc<dyn Hitable> = Sphere::arc(
         Vec3::new(-1.0, 0.0, -1.0),
         0.5,
-        Metal::boxed(Vec3::new(0.8, 0.8, 0.8), 0.0),
+        Metal::arc(Vec3::new(0.8, 0.8, 0.8), 0.0),
     );
-    let sphere_3: Box<Arc<dyn Hitable>> =
-        Sphere::boxed(Vec3::new(1.0, 0.0, -1.0), 0.45, Dielectric::boxed(1.5));
-    let sphere_4: Box<Arc<dyn Hitable>> = Sphere::boxed(
+    let sphere_3: Arc<dyn Hitable> =
+        Sphere::arc(Vec3::new(1.0, 0.0, -1.0), 0.45, Dielectric::arc(1.5));
+    let sphere_4: Arc<dyn Hitable> = Sphere::arc(
         Vec3::new(1.2, 0.0, -2.1),
         0.45,
-        Diffuse::boxed(Vec3::new(0.6, 0.8, 0.6)),
+        Diffuse::arc(Vec3::new(0.6, 0.8, 0.6)),
     );
-    let sphere_5: Box<Arc<dyn Hitable>> = Sphere::boxed(
+    let sphere_5: Arc<dyn Hitable> = Sphere::arc(
         Vec3::new(0.0, 0.0, 0.500000001),
         0.45,
-        Metal::boxed(Vec3::new(1.0, 1.0, 1.0), 0.01),
+        Metal::arc(Vec3::new(1.0, 1.0, 1.0), 0.01),
     );
-    let ground_sphere: Box<Arc<dyn Hitable>> = Sphere::boxed(
+    let ground_sphere: Arc<dyn Hitable> = Sphere::arc(
         Vec3::new(0.0, -100.5, -1.0),
         100.0,
-        Diffuse::boxed(Vec3::new(0.8, 0.8, 0.0)),
+        Diffuse::arc(Vec3::new(0.8, 0.8, 0.0)),
     );
 
     let world = HitableList::new(&[

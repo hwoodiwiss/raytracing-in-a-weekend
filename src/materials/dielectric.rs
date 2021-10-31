@@ -18,8 +18,8 @@ impl Dielectric {
         Self { refractive_index }
     }
 
-    pub fn boxed(refractive_index: f32) -> Box<Arc<dyn Material>> {
-        Box::new(Arc::new(Self::new(refractive_index)))
+    pub fn arc(refractive_index: f32) -> Arc<dyn Material> {
+        Arc::new(Self::new(refractive_index))
     }
 
     fn schlick(cosine: f32, refractive_index: f32) -> f32 {
