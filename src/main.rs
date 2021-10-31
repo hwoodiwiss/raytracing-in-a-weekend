@@ -1,4 +1,4 @@
-use std::{sync::Arc, time::SystemTime};
+use std::{mem::size_of, sync::Arc, time::SystemTime};
 
 use camera::Camera;
 use hitable::Hitable;
@@ -49,6 +49,8 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
 fn main() {
     let nx = 1920;
     let ny = 1080;
+    let num_pixels = nx * ny;
+    let pixel_size = size_of::<u16>() * 3;
     let samples = 100;
 
     let sphere_1: Box<Arc<dyn Hitable>> = Sphere::boxed(
@@ -94,31 +96,40 @@ fn main() {
         90.0,
         nx as f32 / ny as f32,
     );
-    let mut image_bytes = Vec::with_capacity(nx as usize * ny as usize);
+    let mut image_bytes = vec![0; num_pixels as usize * pixel_size];
     let mut rng = thread_rng();
 
     let now = SystemTime::now();
-    for j in (0..ny).rev() {
-        for i in 0..nx {
-            let mut col = Vec3::new(0.0, 0.0, 0.0);
-            for _ in 0..samples {
-                let u_jitter: f32 = rng.gen();
-                let v_jitter: f32 = rng.gen();
-                let u = (i as f32 + u_jitter) / nx as f32;
-                let v = (j as f32 + v_jitter) / ny as f32;
-                let ray = camera.get_ray(u, v);
-                col += ray_colour(&ray, &world, 0);
-            }
-            col /= samples as f32;
-            col = Vec3::new(col[0].sqrt(), col[1].sqrt(), col[2].sqrt());
-            let ir = (65534.99 * col.r()) as u16;
-            let ig = (65534.99 * col.g()) as u16;
-            let ib = (65534.99 * col.b()) as u16;
-            image_bytes.extend_from_slice(&ir.to_be_bytes());
-            image_bytes.extend_from_slice(&ig.to_be_bytes());
-            image_bytes.extend_from_slice(&ib.to_be_bytes());
+
+    for idx in 0..num_pixels {
+        let j = ny - idx / nx;
+        let i = idx % nx;
+        let mut col = Vec3::new(0.0, 0.0, 0.0);
+        for _ in 0..samples {
+            let u_jitter: f32 = rng.gen();
+            let v_jitter: f32 = rng.gen();
+            let u = (i as f32 + u_jitter) / nx as f32;
+            let v = (j as f32 + v_jitter) / ny as f32;
+            let ray = camera.get_ray(u, v);
+            col += ray_colour(&ray, &world, 0);
         }
+        col /= samples as f32;
+        col = Vec3::new(col[0].sqrt(), col[1].sqrt(), col[2].sqrt());
+        let hdr_rgb = [
+            (65534.99 * col.r()) as u16,
+            (65534.99 * col.g()) as u16,
+            (65534.99 * col.b()) as u16,
+        ];
+        let mut ctr = 0;
+        hdr_rgb
+            .iter()
+            .flat_map(|channel| channel.to_be_bytes())
+            .for_each(|byte| {
+                image_bytes[idx * pixel_size + ctr] = byte;
+                ctr += 1
+            });
     }
+
     println!(
         "Image rendered in {} seconds",
         now.elapsed().unwrap().as_secs()
@@ -126,6 +137,6 @@ fn main() {
     let mut file = std::fs::File::create("raytracing.png").unwrap();
     let png_encoder = PngEncoder::new(&mut file);
     png_encoder
-        .encode(&image_bytes, nx, ny, image::ColorType::Rgb16)
+        .encode(&image_bytes, nx as u32, ny as u32, image::ColorType::Rgb16)
         .unwrap();
 }
