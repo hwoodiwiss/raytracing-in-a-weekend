@@ -43,12 +43,12 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
                 return mat_hit.attenuation * ray_colour(&mat_hit.scatter_ray, hitable, depth + 1);
             }
         }
-        return Vec3::new(0.0, 0.0, 0.0);
+        Vec3::new(0.0, 0.0, 0.0)
     } else {
         let unit_direction = ray.direction.unit();
         let t = 0.5 * (unit_direction.y() + 1.0);
-        return (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0);
-    };
+        (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
+    }
 }
 
 fn main() {
