@@ -39,7 +39,7 @@ fn point_in_unit_sphere() -> Vec3 {
 fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
     if let Some(hit) = hitable.hit(ray, 0.0001, f32::MAX) {
         if depth < 50 {
-            if let Some(mat_hit) = hit.material.scatter(&ray, &hit) {
+            if let Some(mat_hit) = hit.material.scatter(ray, &hit) {
                 return mat_hit.attenuation * ray_colour(&mat_hit.scatter_ray, hitable, depth + 1);
             }
         }
