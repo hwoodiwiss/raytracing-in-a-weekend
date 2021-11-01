@@ -10,6 +10,7 @@ use image::png::PngEncoder;
 use materials::{Diffuse, Metal};
 use rand::{thread_rng, Rng};
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
+use shapes::MovingSphere;
 use structures::{HitableList, Ray, Vec3};
 
 #[macro_use]
@@ -61,7 +62,18 @@ fn random_scene() -> HitableList {
                 } else {
                     Dielectric::arc(1.5)
                 };
-                list.push(Sphere::arc(centre, 0.2, mat));
+                if (a as i32 * b).abs() % 2 == 0 {
+                    list.push(Sphere::arc(centre, 0.2, mat));
+                } else {
+                    list.push(MovingSphere::arc(
+                        centre,
+                        centre + Vec3::new(0.0, 0.5 * rng.gen::<f32>(), 0.0),
+                        0.0,
+                        1.0,
+                        0.2,
+                        mat,
+                    ));
+                };
             }
         }
     }
