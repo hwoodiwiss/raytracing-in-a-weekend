@@ -61,30 +61,14 @@ fn main() {
     );
     let sphere_3: Arc<dyn Hitable> =
         Sphere::arc(Vec3::new(1.0, 0.0, -1.0), 0.45, Dielectric::arc(1.5));
-    let sphere_4: Arc<dyn Hitable> = Sphere::arc(
-        Vec3::new(1.2, 0.0, -2.1),
-        0.45,
-        Diffuse::arc(Vec3::new(0.6, 0.8, 0.6)),
-    );
-    let sphere_5: Arc<dyn Hitable> = Sphere::arc(
-        Vec3::new(0.0, 0.0, 0.500001),
-        0.45,
-        Metal::arc(Vec3::new(1.0, 1.0, 1.0), 0.01),
-    );
+
     let ground_sphere: Arc<dyn Hitable> = Sphere::arc(
         Vec3::new(0.0, -100.5, -1.0),
         100.0,
         Diffuse::arc(Vec3::new(0.8, 0.8, 0.0)),
     );
 
-    let world = HitableList::new(&[
-        sphere_1,
-        sphere_2,
-        sphere_3,
-        sphere_4,
-        sphere_5,
-        ground_sphere,
-    ]);
+    let world = HitableList::new(&[sphere_1, sphere_2, sphere_3, ground_sphere]);
     let camera = Camera::new(
         Vec3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 0.0, -1.0),
