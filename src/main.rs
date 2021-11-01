@@ -106,21 +106,21 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
 }
 
 fn main() {
-    let nx = 1000;
-    let ny = 500;
+    let nx = 1920;
+    let ny = 1080;
     let num_pixels = nx * ny;
     let pixel_size = size_of::<u16>() * 3;
-    let samples = 10;
+    let samples = 100;
 
     let world = random_scene();
-    let cam_pos = Vec3::new(3.0, 3.0, 2.0);
-    let cam_target = Vec3::new(0.0, 0.0, -1.0);
+    let cam_pos = Vec3::new(6.0, 1.6, 1.5);
+    let cam_target = Vec3::new(0.0, 1.0, 0.0);
     let cam_focus_dist = (cam_pos - cam_target).length();
     let camera = Camera::new(
         cam_pos,
         cam_target,
         Vec3::new(0.0, 1.0, 0.0),
-        50.0,
+        70.0,
         nx as f32 / ny as f32,
         0.05,
         cam_focus_dist,
