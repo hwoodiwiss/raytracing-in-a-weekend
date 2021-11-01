@@ -113,8 +113,8 @@ fn main() {
     let samples = 100;
 
     let world = random_scene();
-    let cam_pos = Vec3::new(6.0, 1.6, 1.5);
-    let cam_target = Vec3::new(0.0, 1.0, 0.0);
+    let cam_pos = Vec3::new(7.0, 1.75, 1.75);
+    let cam_target = Vec3::new(4.0, 1.0, 0.0);
     let cam_focus_dist = (cam_pos - cam_target).length();
     let camera = Camera::new(
         cam_pos,
@@ -122,7 +122,7 @@ fn main() {
         Vec3::new(0.0, 1.0, 0.0),
         70.0,
         nx as f32 / ny as f32,
-        0.05,
+        0.06,
         cam_focus_dist,
     );
     let image_bytes = Arc::new(Mutex::new(vec![0; num_pixels as usize * pixel_size]));
