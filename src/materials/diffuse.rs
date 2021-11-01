@@ -21,9 +21,9 @@ impl Diffuse {
 }
 
 impl Material for Diffuse {
-    fn scatter(&self, _in_ray: &Ray, hit: &RayHit) -> Option<MaterialHit> {
+    fn scatter(&self, in_ray: &Ray, hit: &RayHit) -> Option<MaterialHit> {
         let target = hit.normal + Vec3::get_point_in_unit_sphere();
-        let scatter_ray = Ray::new(hit.point, target);
+        let scatter_ray = Ray::new(hit.point, target, in_ray.time);
         let attenuation = self.albedo;
         Some(MaterialHit {
             attenuation,

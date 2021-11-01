@@ -121,6 +121,8 @@ fn main() {
         nx as f32 / ny as f32,
         0.06,
         cam_focus_dist,
+        1.0,
+        2.0,
     );
     let image_bytes = Arc::new(Mutex::new(vec![0; num_pixels as usize * pixel_size]));
 

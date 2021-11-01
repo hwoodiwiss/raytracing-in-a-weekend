@@ -49,9 +49,9 @@ impl Material for Dielectric {
                 1.0
             };
         let scatter_ray = if rng.gen::<f32>() < reflected_prob {
-            Ray::new(hit.point, reflected)
+            Ray::new(hit.point, reflected, in_ray.time)
         } else {
-            Ray::new(hit.point, refraction_dir)
+            Ray::new(hit.point, refraction_dir, in_ray.time)
         };
         Some(MaterialHit {
             attenuation,

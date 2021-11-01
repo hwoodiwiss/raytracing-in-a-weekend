@@ -30,6 +30,7 @@ impl Material for Metal {
         let scatter_ray = Ray::new(
             hit.point,
             reflection + self.fuzz * Vec3::get_point_in_unit_sphere(),
+            in_ray.time,
         );
         let attenuation = self.albedo;
         if scatter_ray.direction.dot(&hit.normal) > 0.0 {
