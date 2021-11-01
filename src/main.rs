@@ -7,17 +7,16 @@ use std::{
 use camera::Camera;
 use hitable::Hitable;
 use image::png::PngEncoder;
-use materials::{diffuse::Diffuse, metal::Metal};
+use materials::{Diffuse, Metal};
 use rand::{thread_rng, Rng};
 use ray::Ray;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
+use structures::HitableList;
 
 #[macro_use]
 extern crate impl_ops;
 
-use crate::{
-    hitable::HitableList, materials::dielectric::Dielectric, shapes::sphere::Sphere, vec3::Vec3,
-};
+use crate::{materials::Dielectric, shapes::Sphere, vec3::Vec3};
 
 mod camera;
 mod hitable;
@@ -25,6 +24,7 @@ mod material;
 mod materials;
 mod ray;
 mod shapes;
+mod structures;
 mod vec3;
 
 fn random_scene() -> HitableList {

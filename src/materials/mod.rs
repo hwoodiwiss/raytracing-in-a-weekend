@@ -1,3 +1,7 @@
-pub mod dielectric;
-pub mod diffuse;
-pub mod metal;
+mod dielectric;
+mod diffuse;
+mod metal;
+
+pub use dielectric::*;
+pub use diffuse::*;
+pub use metal::*;
