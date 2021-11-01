@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::{
     hitable::{Hitable, RayHit},
     material::Material,
-    structures::{Ray, Vec3},
+    structures::{Ray, Vec3, AABB},
 };
 
 pub struct Sphere {
@@ -54,5 +54,12 @@ impl Hitable for Sphere {
             }
         }
         None
+    }
+
+    fn bounding_box(&self, _t0: f32, _t1: f32) -> Option<AABB> {
+        Some(AABB::new(
+            self.centre - Vec3::new(self.radius, self.radius, self.radius),
+            self.centre + Vec3::new(self.radius, self.radius, self.radius),
+        ))
     }
 }

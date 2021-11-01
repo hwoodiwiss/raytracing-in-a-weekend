@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::hitable::{Hitable, RayHit};
 
-use super::Ray;
+use super::{Ray, AABB};
 
 pub struct HitableList {
     list: Vec<Arc<dyn Hitable>>,
@@ -27,5 +27,24 @@ impl Hitable for HitableList {
             }
         }
         best_hit
+    }
+
+    fn bounding_box(&self, t0: f32, t1: f32) -> Option<AABB> {
+        if self.list.is_empty() {
+            None
+        } else {
+            if let Some(mut scene_bound) = self.list[0].bounding_box(t0, t1) {
+                for hitable in &self.list {
+                    if let Some(item_bound) = hitable.bounding_box(t0, t1) {
+                        scene_bound = AABB::surrounding_box(&item_bound, &scene_bound);
+                    } else {
+                        return None;
+                    }
+                }
+                Some(scene_bound)
+            } else {
+                None
+            }
+        }
     }
 }

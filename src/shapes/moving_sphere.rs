@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::{
     hitable::{Hitable, RayHit},
     material::Material,
-    structures::{Ray, Vec3},
+    structures::{Ray, Vec3, AABB},
 };
 
 pub struct MovingSphere {
@@ -79,5 +79,19 @@ impl Hitable for MovingSphere {
             }
         }
         None
+    }
+
+    fn bounding_box(&self, _: f32, _: f32) -> Option<AABB> {
+        let start_box = AABB::new(
+            self.centre0 - Vec3::new(self.radius, self.radius, self.radius),
+            self.centre0 + Vec3::new(self.radius, self.radius, self.radius),
+        );
+
+        let end_box = AABB::new(
+            self.centre1 - Vec3::new(self.radius, self.radius, self.radius),
+            self.centre1 + Vec3::new(self.radius, self.radius, self.radius),
+        );
+
+        Some(AABB::surrounding_box(&start_box, &end_box))
     }
 }

@@ -10,8 +10,7 @@ use image::png::PngEncoder;
 use materials::{Diffuse, Metal};
 use rand::{thread_rng, Rng};
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
-use shapes::MovingSphere;
-use structures::{HitableList, Ray, Vec3};
+use structures::{BvhNode, Ray, Vec3};
 
 #[macro_use]
 extern crate impl_ops;
@@ -25,7 +24,7 @@ mod materials;
 mod shapes;
 mod structures;
 
-fn random_scene() -> HitableList {
+fn random_scene() -> BvhNode {
     let n = 500;
     let mut rng = thread_rng();
     let mut list = Vec::<Arc<dyn Hitable>>::with_capacity(n + 1);
@@ -62,18 +61,7 @@ fn random_scene() -> HitableList {
                 } else {
                     Dielectric::arc(1.5)
                 };
-                if (a as i32 * b).abs() % 2 == 0 {
-                    list.push(Sphere::arc(centre, 0.2, mat));
-                } else {
-                    list.push(MovingSphere::arc(
-                        centre,
-                        centre + Vec3::new(0.0, 0.5 * rng.gen::<f32>(), 0.0),
-                        0.0,
-                        1.0,
-                        0.2,
-                        mat,
-                    ));
-                };
+                list.push(Sphere::arc(centre, 0.2, mat));
             }
         }
     }
@@ -96,7 +84,7 @@ fn random_scene() -> HitableList {
         Metal::arc(Vec3::new(0.7, 0.6, 0.5), 0.0),
     ));
 
-    HitableList::new(&list[..])
+    BvhNode::new(&list[..], 0.0, 0.0)
 }
 
 fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
@@ -134,11 +122,12 @@ fn main() {
         0.0,
         cam_focus_dist,
         0.0,
-        1.0,
+        0.0,
     );
     let image_bytes = Arc::new(Mutex::new(vec![0; num_pixels as usize * pixel_size]));
 
     let now = SystemTime::now();
+    println!("Starting render");
     (0..num_pixels).into_par_iter().for_each(|idx| {
         let mut rng = thread_rng();
         let j = ny - idx / nx;
