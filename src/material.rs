@@ -1,4 +1,7 @@
-use crate::{hitable::RayHit, ray::Ray, vec3::Vec3};
+use crate::{
+    hitable::RayHit,
+    structures::{Ray, Vec3},
+};
 
 pub struct MaterialHit {
     pub attenuation: Vec3,

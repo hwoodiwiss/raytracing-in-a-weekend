@@ -3,8 +3,7 @@ use std::sync::Arc;
 use crate::{
     hitable::RayHit,
     material::{Material, MaterialHit},
-    ray::Ray,
-    vec3::Vec3,
+    structures::{Ray, Vec3},
 };
 
 pub struct Metal {

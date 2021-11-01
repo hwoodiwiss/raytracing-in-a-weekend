@@ -1,6 +1,6 @@
 use std::f32::consts;
 
-use crate::{ray::Ray, vec3::Vec3};
+use crate::structures::{Ray, Vec3};
 
 pub struct Camera {
     origin: Vec3,

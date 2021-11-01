@@ -1,6 +1,9 @@
 use std::sync::Arc;
 
-use crate::{material::Material, ray::Ray, vec3::Vec3};
+use crate::{
+    material::Material,
+    structures::{Ray, Vec3},
+};
 
 pub struct RayHit {
     pub distance: f32,

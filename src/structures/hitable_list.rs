@@ -1,9 +1,8 @@
 use std::sync::Arc;
 
-use crate::{
-    hitable::{Hitable, RayHit},
-    ray::Ray,
-};
+use crate::hitable::{Hitable, RayHit};
+
+use super::Ray;
 
 pub struct HitableList {
     list: Vec<Arc<dyn Hitable>>,
