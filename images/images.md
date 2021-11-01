@@ -44,12 +44,12 @@ Samples: 1000
 
 Notes: This took about 40 mins!
 
-X: 7680
+## Chapter 12: Raytracing in One Weekend
 
-Y: 4320
+X: 1920
 
-Samples: 1000
+Y: 1080
 
-![Reflective Spheres in 8K](BigMetals.png)
+Samples: 100
 
-Notes: I left this overnight!
+![Raytracing in One Weekend](RaytracingInOneWeekend.png)
