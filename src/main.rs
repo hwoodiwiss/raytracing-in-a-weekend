@@ -27,6 +27,69 @@ mod ray;
 mod shapes;
 mod vec3;
 
+fn random_scene() -> HitableList {
+    let n = 500;
+    let mut rng = thread_rng();
+    let mut list = Vec::<Arc<dyn Hitable>>::with_capacity(n + 1);
+    list.push(Sphere::arc(
+        Vec3::new(0.0, -1000.0, 0.0),
+        1000.0,
+        Diffuse::arc(Vec3::new(0.5, 0.5, 0.5)),
+    ));
+    let headliners_plane = Vec3::new(4.0, 0.2, 0.0);
+    for a in -11..11 {
+        for b in -11..11 {
+            let mat_choice = rng.gen::<f32>();
+            let centre = Vec3::new(
+                a as f32 + 0.9 + rng.gen::<f32>(),
+                0.2,
+                b as f32 + 0.9 + rng.gen::<f32>(),
+            );
+            if (centre - headliners_plane).length() > 0.9 {
+                let mat = if mat_choice < 0.8 {
+                    Diffuse::arc(Vec3::new(
+                        rng.gen::<f32>() * rng.gen::<f32>(),
+                        rng.gen::<f32>() * rng.gen::<f32>(),
+                        rng.gen::<f32>() * rng.gen::<f32>(),
+                    ))
+                } else if mat_choice < 0.95 {
+                    Metal::arc(
+                        Vec3::new(
+                            rng.gen::<f32>() * rng.gen::<f32>(),
+                            rng.gen::<f32>() * rng.gen::<f32>(),
+                            rng.gen::<f32>() * rng.gen::<f32>(),
+                        ),
+                        0.5 * rng.gen::<f32>(),
+                    )
+                } else {
+                    Dielectric::arc(1.5)
+                };
+                list.push(Sphere::arc(centre, 0.2, mat));
+            }
+        }
+    }
+
+    list.push(Sphere::arc(
+        Vec3::new(0.0, 1.0, 0.0),
+        1.0,
+        Dielectric::arc(1.5),
+    ));
+
+    list.push(Sphere::arc(
+        Vec3::new(-4.0, 1.0, 0.0),
+        1.0,
+        Diffuse::arc(Vec3::new(0.8, 0.8, 0.8)),
+    ));
+
+    list.push(Sphere::arc(
+        Vec3::new(4.0, 1.0, 0.0),
+        1.0,
+        Metal::arc(Vec3::new(0.7, 0.6, 0.5), 0.0),
+    ));
+
+    HitableList::new(&list[..])
+}
+
 fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
     if let Some(hit) = hitable.hit(ray, 0.0001, f32::MAX) {
         if depth < 50 {
@@ -43,38 +106,24 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
 }
 
 fn main() {
-    let nx = 1920;
-    let ny = 1080;
+    let nx = 1000;
+    let ny = 500;
     let num_pixels = nx * ny;
     let pixel_size = size_of::<u16>() * 3;
-    let samples = 100;
+    let samples = 10;
 
-    let sphere_1: Arc<dyn Hitable> = Sphere::arc(
-        Vec3::new(0.0, 0.0, -1.0),
-        0.5,
-        Diffuse::arc(Vec3::new(0.8, 0.3, 0.3)),
-    );
-    let sphere_2: Arc<dyn Hitable> = Sphere::arc(
-        Vec3::new(-1.0, 0.0, -1.0),
-        0.5,
-        Metal::arc(Vec3::new(0.8, 0.8, 0.8), 0.0),
-    );
-    let sphere_3: Arc<dyn Hitable> =
-        Sphere::arc(Vec3::new(1.0, 0.0, -1.0), 0.45, Dielectric::arc(1.5));
-
-    let ground_sphere: Arc<dyn Hitable> = Sphere::arc(
-        Vec3::new(0.0, -100.5, -1.0),
-        100.0,
-        Diffuse::arc(Vec3::new(0.8, 0.8, 0.0)),
-    );
-
-    let world = HitableList::new(&[sphere_1, sphere_2, sphere_3, ground_sphere]);
+    let world = random_scene();
+    let cam_pos = Vec3::new(3.0, 3.0, 2.0);
+    let cam_target = Vec3::new(0.0, 0.0, -1.0);
+    let cam_focus_dist = (cam_pos - cam_target).length();
     let camera = Camera::new(
-        Vec3::new(0.0, 0.0, 0.0),
-        Vec3::new(0.0, 0.0, -1.0),
+        cam_pos,
+        cam_target,
         Vec3::new(0.0, 1.0, 0.0),
-        90.0,
+        50.0,
         nx as f32 / ny as f32,
+        0.05,
+        cam_focus_dist,
     );
     let image_bytes = Arc::new(Mutex::new(vec![0; num_pixels as usize * pixel_size]));
 
