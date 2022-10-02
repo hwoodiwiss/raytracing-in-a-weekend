@@ -103,8 +103,8 @@ fn ray_colour(ray: &Ray, hitable: &dyn Hitable, depth: i32) -> Vec3 {
 }
 
 fn main() {
-    let nx = 1920;
-    let ny = 1080;
+    let nx = 3840;
+    let ny = 2160;
     let num_pixels = nx * ny;
     let pixel_size = size_of::<u16>() * 3;
     let samples = 100;
